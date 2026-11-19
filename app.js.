@@ -1,0 +1,110 @@
+app.js.
+  const titleInput = document.getElementById("noteTitle");
+const contentInput = document.getElementById("noteContent");
+const saveButton = document.getElementById("saveNote");
+const searchInput = document.getElementById("searchNotes");
+const notesList = document.getElementById("notesList");
+
+let notes = JSON.parse(localStorage.getItem("libretaDigitalNotas") || "[]");
+
+function saveToStorage() {
+  localStorage.setItem("libretaDigitalNotas", JSON.stringify(notes));
+}
+
+function renderNotes(filter = "") {
+  notesList.innerHTML = "";
+
+  const filteredNotes = notes.filter(note =>
+    note.title.toLowerCase().includes(filter.toLowerCase()) ||
+    note.content.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  if (filteredNotes.length === 0) {
+    notesList.textContent = "No hay notas para mostrar.";
+    return;
+  }
+
+  filteredNotes.forEach(note => {
+    const card = document.createElement("article");
+    card.className = "note";
+
+    const heading = document.createElement("h3");
+    heading.textContent = note.title;
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = note.content;
+
+    const date = document.createElement("small");
+    date.textContent = note.date;
+
+    const actions = document.createElement("div");
+    actions.className = "note-actions";
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Editar";
+
+    editButton.addEventListener("click", () => {
+      const newTitle = prompt("Nuevo título:", note.title);
+      if (newTitle === null) return;
+
+      const newContent = prompt("Nuevo contenido:", note.content);
+      if (newContent === null) return;
+
+      if (!newTitle.trim() || !newContent.trim()) {
+        alert("El título y el contenido no pueden quedar vacíos.");
+        return;
+      }
+
+      note.title = newTitle.trim();
+      note.content = newContent.trim();
+      saveToStorage();
+      renderNotes(searchInput.value);
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Eliminar";
+    deleteButton.className = "delete-button";
+
+    deleteButton.addEventListener("click", () => {
+      if (!confirm("¿Quieres eliminar esta nota?")) return;
+
+      notes = notes.filter(item => item.id !== note.id);
+      saveToStorage();
+      renderNotes(searchInput.value);
+    });
+
+    actions.append(editButton, deleteButton);
+    card.append(heading, paragraph, date, actions);
+    notesList.appendChild(card);
+  });
+}
+
+saveButton.addEventListener("click", () => {
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
+
+  if (!title || !content) {
+    alert("Escribe un título y el contenido de tu nota.");
+    return;
+  }
+
+  notes.unshift({
+    id: Date.now().toString(),
+    title,
+    content,
+    date: new Date().toLocaleString("es-MX")
+  });
+
+  saveToStorage();
+
+  titleInput.value = "";
+  contentInput.value = "";
+
+  renderNotes(searchInput.value);
+});
+
+searchInput.addEventListener("input", () => {
+  renderNotes(searchInput.value);
+});
+
+renderNotes();
