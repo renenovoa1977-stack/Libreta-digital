@@ -1,0 +1,35 @@
+index.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#172554">
+<title>Libreta Digital</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="header">
+<h1>📘 Libreta Digital</h1>
+<p>Tu espacio personal para organizar tus ideas</p>
+</header>
+<main class="container">
+<section class="new-note">
+<h2>Nueva nota</h2>
+<input type="text" id="noteTitle" placeholder="Título de tu nota">
+<textarea id="noteContent" placeholder="Escribe aquí tus ideas, pendientes o recordatorios..."></textarea>
+<button id="saveNote">Guardar nota</button>
+</section>
+<section class="notes-section">
+<h2>Mis notas</h2>
+<input type="search" id="searchNotes" placeholder="Buscar una nota...">
+<div id="notesList"></div>
+</section>
+</main>
+<footer>
+<p>Libreta Digital © 2026</p>
+<p>Tus notas se guardan en tu dispositivo.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
